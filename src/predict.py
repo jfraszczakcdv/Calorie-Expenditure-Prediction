@@ -1,38 +1,38 @@
-import torch
 import pandas as pd
+import numpy as np
+import torch
+import joblib
+from model import CaloriePredictor
 
-from src.model import NeuralNetwork
-from src.workout_dataset import load_data
-
-MODEL_PATH = "outputs/2025-12-18/12-53-52/best_model.pth"
-TEST_CSV = "data/test.csv"
-OUT_CSV = "submission.csv"
-
-
-def main():
-    # Wczytaj dane testowe (bez kolumny Calories)
-    test_df = pd.read_csv(TEST_CSV)
-    test_ids = test_df["id"].values
-
-    # Użyj tego samego przetwarzania co w load_data, tylko bez targetu
-    data = test_df.copy()
-    data["Sex"] = data["Sex"].map({"male": 1, "female": 0}).astype(float)
-    features = data.drop(columns=["id"])
-    x = torch.tensor(features.values, dtype=torch.float32)
-
-    # Model
-    model = NeuralNetwork()
-    state_dict = torch.load(MODEL_PATH, map_location="cpu")
-    model.load_state_dict(state_dict)
+def predict():
+    # 1. Wczytaj model i scaler
+    model = CaloriePredictor(input_dim=7, hidden_dim=64, dropout_rate=0.0) # Parametry jak w treningu
+    model.load_state_dict(torch.load('outputs/best_model.pth'))
     model.eval()
-
+    
+    scaler = joblib.load('outputs/scaler.pkl')
+    
+    # 2. Wczytaj dane testowe
+    test_df = pd.read_csv('data/test.csv')
+    ids = test_df['id'] # Zachowaj ID do pliku wynikowego
+    
+    # 3. Przetwórz dane tak samo jak treningowe
+    test_df['Sex'] = test_df['Sex'].map({'male': 0, 'female': 1})
+    features = ['Age', 'Height', 'Weight', 'Duration', 'Heart_Rate', 'Body_Temp', 'Sex']
+    X_test = test_df[features].values.astype(np.float32)
+    
+    # 4. Skalowanie
+    X_test_scaled = scaler.transform(X_test)
+    
+    # 5. Predykcja
     with torch.no_grad():
-        preds = model(x).squeeze().numpy()
-
-    submission = pd.DataFrame({"id": test_ids, "Calories": preds})
-    submission.to_csv(OUT_CSV, index=False)
-    print(f"Zapisano {OUT_CSV}")
-
+        inputs = torch.tensor(X_test_scaled)
+        predictions = model(inputs).numpy().flatten()
+    
+    # 6. Zapisz wynik
+    submission = pd.DataFrame({'id': ids, 'Calories': predictions})
+    submission.to_csv('outputs/submission.csv', index=False)
+    print("Wygenerowano plik outputs/submission.csv gotowy do wysłania!")
 
 if __name__ == "__main__":
-    main()
+    predict()
