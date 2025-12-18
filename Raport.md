@@ -82,3 +82,11 @@ Bez nich, niezależnie od liczby warstw, sieć byłaby matematycznie równoważn
 **3. Rola Dropout'u**
 Dropout to technika **regularyzacji**. Polega na losowym wyłączaniu neuronów podczas treningu.
 Zapobiega to **przeuczeniu (overfitting)**, zmuszając sieć do tworzenia nadmiarowych reprezentacji i niepoleganiu na pojedynczych, silnych cechach.
+
+---
+
+## 7. Autorzy
+* **Dominik Łakomy** - 29163
+* **Jan Buliński** - 30297
+* **Jakub Grzebyta** - 29231
+* **Iakovos Christos Sołtysiak Drosoulaki** - 29291
