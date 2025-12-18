@@ -3,6 +3,8 @@ training:
   epochs: 30
   batch_size: 64
   momentum: 0.9
+  seed: 42
+  val_split: 0.2
 
 data:
   train: "data/train.csv"
