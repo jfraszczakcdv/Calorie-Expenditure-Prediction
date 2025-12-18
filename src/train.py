@@ -10,9 +10,9 @@ import hydra
 from hydra.core.hydra_config import HydraConfig
 from omegaconf import DictConfig
 
-from .workout_dataset import WorkoutDataset
-from .model import NeuralNetwork
-from .rmsle_loss import RMSLELoss
+from src.workout_dataset import WorkoutDataset
+from src.model import NeuralNetwork
+from src.rmsle_loss import RMSLELoss
 
 
 logger: logging.Logger = logging.getLogger(__name__)

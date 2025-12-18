@@ -11,3 +11,6 @@ wheels/
 
 # Hydra outputs
 outputs/*
+
+# Kaggle submissions
+submission.csv
