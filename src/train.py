@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.optim as optim
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from model import CaloriePredictor
+from src.model import CaloriePredictor
 
 # --- KONFIGURACJA ---
 SEED = 42
@@ -27,10 +27,10 @@ def load_and_process_data(filepath):
     
     return X, y
 
-def train_experiment(learning_rate, dropout_rate, X_train, X_val, y_train, y_val):
+def train_experiment(learning_rate, dropout_rate, hidden_dim, X_train, X_val, y_train, y_val):
     set_seed(SEED) # Reprodukowalność
     
-    model = CaloriePredictor(input_dim=7, hidden_dim=64, dropout_rate=dropout_rate)
+    model = CaloriePredictor(input_dim=7, hidden_dim=hidden_dim, dropout_rate=dropout_rate)
     criterion = nn.MSELoss() # Błąd średniokwadratowy
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     
@@ -58,9 +58,8 @@ def train_experiment(learning_rate, dropout_rate, X_train, X_val, y_train, y_val
             
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            # Zapisz najlepszy model
-            if dropout_rate == 0.0 and learning_rate == 0.001: # Zapisujemy tylko "główny" model do predykcji
-                torch.save(model.state_dict(), 'outputs/best_model.pth')
+            # Zapisz model tymczasowo
+            torch.save(model.state_dict(), f'outputs/model_h{hidden_dim}_lr{learning_rate}_d{dropout_rate}.pth')
 
     return best_val_loss.item()
 
@@ -78,17 +77,36 @@ if __name__ == "__main__":
     print(f"Dane podzielone: Trening={len(X_train)}, Walidacja={len(X_val)}")
     
     # Eksperymenty
-    lrs = [0.01, 0.001, 0.0001]
-    dropouts = [0.0, 0.2] # Bez dropoutu i z dropoutem
+    lrs = [0.01, 0.001]
+    dropouts = [0.0, 0.2]
+    hidden_dims = [32, 64, 128] # Różne architektury (rozmiary warstwy ukrytej)
     
     print("\n--- WYNIKI EKSPERYMENTÓW (MSE Loss na zbiorze walidacyjnym) ---")
-    print(f"{'LR':<10} | {'Dropout':<10} | {'Val Loss':<10}")
-    print("-" * 35)
+    print(f"{'Hidden':<10} | {'LR':<10} | {'Dropout':<10} | {'Val Loss':<10}")
+    print("-" * 50)
     
-    for lr in lrs:
-        for drop in dropouts:
-            loss = train_experiment(lr, drop, X_train, X_val, y_train, y_val)
-            print(f"{lr:<10} | {drop:<10} | {loss:.4f}")
+    best_loss = float('inf')
+    best_config = None
+
+    for hidden in hidden_dims:
+        for lr in lrs:
+            for drop in dropouts:
+                loss = train_experiment(lr, drop, hidden, X_train, X_val, y_train, y_val)
+                print(f"{hidden:<10} | {lr:<10} | {drop:<10} | {loss:.4f}")
+                
+                if loss < best_loss:
+                    best_loss = loss
+                    best_config = (hidden, lr, drop)
+
+    print(f"\nNajlepsza konfiguracja: Hidden={best_config[0]}, LR={best_config[1]}, Dropout={best_config[2]} (Loss: {best_loss:.4f})")
+    
+    # Kopiujemy najlepszy model do best_model.pth
+    import shutil
+    import os
+    best_model_run = f'outputs/model_h{best_config[0]}_lr{best_config[1]}_d{best_config[2]}.pth'
+    if os.path.exists(best_model_run):
+        shutil.copy(best_model_run, 'outputs/best_model.pth')
+        print("Zapisano najlepszy model do outputs/best_model.pth")
 
     # Zapisujemy scaler, żeby użyć go przy predykcji
     import joblib

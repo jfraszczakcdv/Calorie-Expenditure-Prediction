@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import torch
 import joblib
-from model import CaloriePredictor
+from src.model import CaloriePredictor
 
 def predict():
     # 1. Wczytaj model i scaler
