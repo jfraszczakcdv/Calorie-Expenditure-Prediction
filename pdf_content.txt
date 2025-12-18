@@ -1,0 +1,93 @@
+--- Page 1 ---
+Zadanie: Sieci Neuronowe i Propagacja Wsteczna
+Rozwiązanie Zadania
+18 grudnia 2025
+Architektura Sieci
+•Wejście:x= [x 1, x2]
+•Warstwa ukryta:2 neurony, funkcja aktywacji ReLU
+•Wyjście:1 neuron, funkcja liniowa (brak aktywacji)
+•Funkcja straty:Mean Squared Error (MSE)
+•Dane:x= [2,3],y target = 5
+1 Część 1: Obliczenie pochodnych (Inicjalizacja 1.0)
+Założenia początkowe:Wszystkie wagi (w) oraz biasy (b) w sieci są zainicjalizowane warto-
+ścią1.0.
+1.1 Propagacja w przód (Forward Pass)
+Warstwa ukryta:
+Obliczenie sumy ważonej (z) oraz aktywacji (h) dla obu neuronów (ze względu na identyczne
+wagi, obliczenia są takie same dla neuronu 1 i 2):
+z= (x1 ·w 1) + (x2 ·w 2) +b= (2·1) + (3·1) + 1 = 6
+h=ReLU(6) = 6
+Warstwa wyjściowa:
+ypred = (h1 ·w out1) + (h2 ·w out2) +bout
+ypred = (6·1) + (6·1) + 1 = 13
+Błąd (MSE):
+L= (ypred −y target)2 = (13−5) 2 = 82 = 64
+1.2 Propagacja wsteczna (Backward Pass)
+Gradient błędu względem predykcji:
+∂L
+∂ypred
+= 2(ypred −y target) = 2(13−5) = 16
+Oznaczmyδ out = 16.
+1
+--- Page 2 ---
+A. Gradienty dla warstwy wyjściowej
+•Dla wag wyjściowych (wout):
+∂L
+∂wout
+=δ out ·h= 16·6 =96
+•Dla biasu wyjściowego (bout):
+∂L
+∂bout
+=δ out ·1 =16
+B. Gradienty dla warstwy ukrytej
+Pochodna funkcji ReLU dlaz= 6wynosi1. Błąd propagowany do warstwy ukrytej:
+δh =δ out ·w out ·f ′(z) = 16·1·1 = 16
+•Dla wag połączonych zx 1 (w11, w21):
+∂L
+∂wx1
+=δ h ·x 1 = 16·2 =32
+•Dla wag połączonych zx 2 (w12, w22):
+∂L
+∂wx2
+=δ h ·x 2 = 16·3 =48
+•Dla biasów ukrytych (b1, b2):
+∂L
+∂b =δ h ·1 =16
+2
+--- Page 3 ---
+2 Część 2: Analiza inicjalizacji zerami
+Pytanie:Czy sieć jest w stanie się uczyć, gdy wszystkie parametry zostaną zainicjalizowane z
+wartością 0.0?
+Odpowiedź:Nie, sieć nie będzie w stanie uczyć się poprawnie.
+Uzasadnienie obliczeniowe:
+1.Forward Pass:Wszystkie sumy ważone wyniosą0. Wyjście sieciypred = 0.
+2.Backward Pass:
+•Gradient na wyjściu:δ out = 2(0−5) =−10.
+•Pochodna dla wag wyjściowych:δ out ·h=−10·0 = 0. (Wagi wyjściowe nie są
+aktualizowane).
+•Pochodna dla warstw ukrytych: Zależy od iloczynu z wagami wyjściowymi (· · ··wout ·
+. . .). Skorowout = 0, gradient zanika i nie dociera do warstw niższych.
+Nawet jeśli bias wyjściowy ulegnie zmianie, wagi pozostaną zerowe lub (w przypadku symetrycz-
+nej inicjalizacji inną stałą) neurony w warstwie ukrytej będą uczyć się identycznych funkcji, co
+prowadzi do problemu symetrii.
+3 Część 3: Pytania teoretyczne
+3.1 1. Zastosowanie sieci neuronowych vs. If/Else
+Zastosowanie sieci:Sieci neuronowe najlepiej sprawdzają się w zadaniach, w których dane
+są nieustrukturyzowane (obrazy, dźwięk), a reguły są zbyt złożone dla jawnych wzorów (np.
+Computer Vision, NLP).
+Dlaczegonie“If-Else”?Ręcznepisanieregułjestniemożliwewzłożonychproblemachzdwóch
+powodów:
+1.Eksplozja kombinatoryczna:Liczba warunków potrzebna do opisania np. wyglądu
+kota na zdjęciu dąży do nieskończoności.
+2.Brak generalizacji:Sztywne warunki (np.if x1=5 then y=5.6) nie potrafią interpo-
+lować wyników dla nowych danych (np.x1=5.1).
+3.2 2. Rola funkcji aktywacji
+Funkcje aktywacji (np. ReLU, Sigmoid) wprowadzają do siecinieliniowość.
+Brak funkcji aktywacji:Jeśli usuniemy funkcje aktywacji, sieć staje się matematycznie rów-
+noważnapojedynczej warstwie liniowej(regresji liniowej). Złożenie funkcji liniowych jest
+nadal funkcją liniową, więc sieć traci zdolność rozwiązywania złożonych problemów.
+3.3 3. Rola Dropout’u
+Dropoutto technika regularyzacji zapobiegająca przeuczeniu (overfitting). Polega na loso-
+wym “wyłączaniu” neuronów podczas treningu. Wymusza to na sieci tworzenie nadmiarowych
+reprezentacji wiedzy i zapobiega poleganiu neuronów na pojedynczych ścieżkach sygnału.
+3
