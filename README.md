@@ -75,35 +75,9 @@ Ustawienia treningu znajdziesz w pliku [`src/config/config.yaml`](src/config/con
 
 ### 1. Pochodne parametrów sieci
 
-Oblicz pochodne funkcji straty względem wszystkich wag i wyrazów wolnych w sieci przedstawionej na schemacie. Każda strzałka prowadząca do neuronu oznacza osobną wagę. Każdy neuron ma własny wyraz wolny.
+Oblicz pochodne funkcji straty względem wszystkich dziewięciu parametrów sieci. Waga $w_{ij}^{\ell}$ łączy wejście $j$ z neuronem $i$ w warstwie $\ell$. Na przykład $w_{12}^{1}$ łączy $x_2$ z pierwszym neuronem warstwy ukrytej. Wyraz wolny (bias) $b_i^{\ell}$ należy do neuronu $i$ w tej samej warstwie. Warstwa ukryta ma indeks $1$, a wyjściowa $2$. Bias dodaj do sumy ważonej danego neuronu. W warstwie ukrytej zrób to przed zastosowaniem ReLU.
 
-```mermaid
-flowchart LR
-    subgraph input["Wejście"]
-        direction TB
-        X1["x₁ = 2"]
-        X2["x₂ = 3"]
-    end
-
-    subgraph hidden["Warstwa ukryta"]
-        direction TB
-        H1["Neuron 1 · ReLU"]
-        H2["Neuron 2 · ReLU"]
-    end
-
-    subgraph output["Warstwa wyjściowa"]
-        YHAT["Neuron liniowy · ŷ"]
-    end
-
-    X1 --> H1
-    X1 --> H2
-    X2 --> H1
-    X2 --> H2
-    H1 --> YHAT
-    H2 --> YHAT
-    YHAT --> LOSS["MSE = (ŷ − y)²"]
-    Y["Wartość docelowa · y = 5"] --> LOSS
-```
+![Sieć 2–2–1. Wejścia x₁ = 2 i x₂ = 3 trafiają do pierwszego neuronu ReLU przez wagi w₁₁¹ i w₁₂¹, a do drugiego przez w₂₁¹ i w₂₂¹. Neurony ukryte mają biasy b₁¹ i b₂¹. Wyjście liniowe łączy ich aktywacje przez w₁₁² i w₁₂² i dodaje bias b₁². Strata dla y = 5 wynosi (ŷ − y)².](docs/schemat-sieci-2-2-1.png)
 
 - Czy sieć może się uczyć, jeśli wszystkie wagi i wyrazy wolne zostaną zainicjalizowane zerami? Wskaż, które parametry mogą się wtedy zmienić. W obliczeniach przyjmij `ReLU′(0) = 0`.
 - Oblicz pochodne dla przypadku, w którym wszystkie wagi i wyrazy wolne są początkowo równe 1.
