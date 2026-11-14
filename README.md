@@ -50,6 +50,10 @@ uv run python -m pytest
 
 Ustawienia treningu znajdziesz w pliku [`src/config/config.yaml`](src/config/config.yaml).
 
+## Konkurs Kaggle
+
+[Predict Calorie Expenditure – Kaggle](https://www.kaggle.com/competitions/playground-series-s5e5/)
+
 ## Zadanie programistyczne
 
 1. **Podziel dane i przeprowadź analizę.** Ustaw ziarno losowości (`seed`) i utwórz zbiór treningowy oraz walidacyjny. Podaj liczbę obserwacji w obu zbiorach. Na zbiorze treningowym pokaż histogram zmiennej `Calories` oraz jej zależność od każdej z siedmiu cech wejściowych. Pomiń kolumnę `id`. Wskaż, które cechy wydają się pomocne w predykcji, i uzasadnij wybór na podstawie wykresów.
@@ -69,7 +73,7 @@ Ustawienia treningu znajdziesz w pliku [`src/config/config.yaml`](src/config/con
 
 - Kod rozwiązania, w tym skrypt treningowy i skrypt predykcyjny.
 - Krótki raport z wykresami, tabelą wyników RMSLE i wnioskami z porównań.
-- Plik `submission.csv` z predykcjami dla zbioru testowego oraz rzesłanie pliku na Kaggle.
+- Plik `submission.csv` z predykcjami dla zbioru testowego. Prześlij go na [stronę konkursu na Kaggle](https://www.kaggle.com/competitions/playground-series-s5e5/).
 
 ## Zadanie teoretyczne
 
