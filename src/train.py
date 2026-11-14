@@ -36,6 +36,7 @@ def train(
     losses: list[float] = []
     # Trening przez zdefiniowaną liczbę epok
     for epoch in range(epochs):
+        model.train()
         running_loss: float = 0.0
         # Iteracja po wszystkich batchach w zbiorze treninigowym
         for X_batch, y_batch in dataloader:
