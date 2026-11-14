@@ -79,16 +79,17 @@ Ustawienia treningu znajdziesz w pliku [`src/config/config.yaml`](src/config/con
 
 ### 1. Pochodne parametrów sieci
 
-Oblicz pochodne funkcji straty względem wszystkich dziewięciu parametrów sieci. Waga $w_{ij}^{\ell}$ łączy wejście $j$ z neuronem $i$ w warstwie $\ell$. Na przykład $w_{12}^{1}$ łączy $x_2$ z pierwszym neuronem warstwy ukrytej. Wyraz wolny (bias) $b_i^{\ell}$ należy do neuronu $i$ w tej samej warstwie. Warstwa ukryta ma indeks $1$, a wyjściowa $2$. Bias dodaj do sumy ważonej danego neuronu. W warstwie ukrytej zrób to przed zastosowaniem ReLU.
+Oblicz pochodne funkcji straty względem wszystkich dziewięciu parametrów sieci. Waga $w_{ij}^{\ell}$ łączy wejście $j$ z neuronem $i$ w warstwie $\ell$. Na przykład $w_{12}^{1}$ łączy $x_2$ z pierwszym neuronem warstwy ukrytej. Wyraz wolny (bias) $b_i^{\ell}$ należy do neuronu $i$ w tej samej warstwie.
 
 ![Sieć 2–2–1. Wejścia x₁ = 2 i x₂ = 3 trafiają do pierwszego neuronu ReLU przez wagi w₁₁¹ i w₁₂¹, a do drugiego przez w₂₁¹ i w₂₂¹. Neurony ukryte mają biasy b₁¹ i b₂¹. Wyjście liniowe łączy ich aktywacje przez w₁₁² i w₁₂² i dodaje bias b₁². Strata dla y = 5 wynosi (ŷ − y)².](docs/schemat-sieci-2-2-1.png)
 
 - Czy sieć może się uczyć, jeśli wszystkie wagi i wyrazy wolne zostaną zainicjalizowane zerami? Wskaż, które parametry mogą się wtedy zmienić. W obliczeniach przyjmij `ReLU′(0) = 0`.
 - Oblicz pochodne dla przypadku, w którym wszystkie wagi i wyrazy wolne są początkowo równe 1.
+- Jakie byłyby pochodne gdyby neuron 1 został wykluczony z sieci?
 
 ### 2. Pytania
 
 1. W jakich zadaniach warto rozważyć użycie sieci neuronowej? Jakie ograniczenia miałby program, który przewiduje wartości wyłącznie na podstawie ręcznie zapisanych reguł, takich jak „jeśli `x1 = 5` i `x2 = 1`, zwróć `5.6`”?
-2. Do czego służą funkcje aktywacji? Co się stanie, jeśli usuniesz je z sieci o wielu warstwach ukrytych?
-3. W jakim celu używane są funkcje aktywacji? Co się stanie jeśli w sieci o wielu warstwach ukrytych pozbędziemy się funkcji aktywacji?
-4. Jak poradzić sobie z brakującymi wartościami cech w części rekordów zbioru treningowego?
+2. W jakim celu używane są funkcje aktywacji? Co się stanie jeśli w sieci o wielu warstwach ukrytych pozbędziemy się funkcji aktywacji?
+3. Jak poradzić sobie z brakującymi wartościami cech w części rekordów zbioru treningowego?
+4. Co dzieje się z wartością funkcji sigmoidalnej i jej pochodną, gdy suma ważona wraz z biasem przyjmuje bardzo duże wartości dodatnie lub ujemne? Jak wpływa to na przepływ gradientu podczas treningu?
